@@ -1,0 +1,9 @@
+# Extra packages installed on top of quay.io/jupyter/scipy-notebook.
+# pandas, numpy, scikit-learn, matplotlib, seaborn and scipy are
+# already included in the base image, so they are not repeated here.
+
+# Word clouds for the spam vs ham text comparison (optional figure)
+wordcloud>=1.9
+
+# Pretty plain-text tables in the saved metrics/summary files
+tabulate>=0.9

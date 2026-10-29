@@ -1,0 +1,9 @@
+# Keep the build context small: only Dockerfile, requirements.txt,
+# data/dataset.csv and notebook/analysis.ipynb are needed in the image.
+output/
+screenshots/
+.git/
+.gitignore
+**/.ipynb_checkpoints/
+**/__pycache__/
+*.zip
