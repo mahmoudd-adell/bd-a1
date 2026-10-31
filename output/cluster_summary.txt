@@ -1,0 +1,40 @@
+CSCI461 Assignment 1 - K-Means clustering of SMS messages
+==============================================================
+Representation: TF-IDF (stop words removed, min_df=3, max_df=0.5) -> TruncatedSVD(100) -> L2 normalise
+k tested: 2-10 | chosen k = 2
+k selection table:
+ k  inertia  silhouette  largest cluster  spam-heavy cluster size  % spam in that cluster
+ 2   4788.8      0.0274             4550                      621                    93.9
+ 3   4707.6      0.0309             4155                      605                    94.5
+ 4   4654.4      0.0307             3612                      594                    94.6
+ 5   4565.2      0.0412             3391                      596                    94.6
+ 6   4491.9      0.0475             3561                      583                    94.2
+ 7   4449.1      0.0500             3058                      586                    94.4
+ 8   4373.8      0.0558             2754                      592                    94.4
+ 9   4330.8      0.0585             2255                      559                    95.0
+10   4294.4      0.0607             2460                      505                    94.9
+
+Silhouette score (k=2): 0.0274
+Comparison with true labels: ARI=0.879, NMI=0.755, purity=0.979
+
+Cluster sizes, % spam and top terms:
+|   cluster |   size |   pct_spam |   avg_chars | top terms                                                                                  |
+|----------:|-------:|-----------:|------------:|:-------------------------------------------------------------------------------------------|
+|         0 |   4550 |        1.5 |        71.3 | just, ok, like, got, come, know, good, time, going, day, home, thing                       |
+|         1 |    621 |       93.9 |       135.4 | phonetoken, moneytoken, free, txt, urltoken, stop, mobile, text, claim, reply, prize, cash |
+
+Cluster x label crosstab:
+label     ham  spam   All
+cluster                  
+0        4480    70  4550
+1          38   583   621
+All      4518   653  5171
+
+Interpretation:
+- Cluster 0 = personal conversation (4,550 msgs, 1.5% spam): just, ok, like, got, come, know, good, time...
+- Cluster 1 = promotional/commercial (621 msgs, 93.9% spam): phonetoken, moneytoken, free, txt, urltoken, stop, claim, prize, cash...
+- k=2 chosen: silhouette is low and flat for k=2..10 with no clear elbow; at every k one ~600-message cluster is 94-95% spam,
+  and extra clusters only split ordinary chat into small topics. The dataset's main structure is promotional vs personal.
+- Without using labels, 583/653 spam (89%) land in cluster 1; only 38 ham do. ARI=0.88, NMI=0.76, purity=0.98.
+- Low silhouette (0.027) is expected for sparse high-dimensional text: clusters overlap near the boundary.
+- Cluster IDs are arbitrary; only the composition is compared with the labels.
