@@ -179,6 +179,6 @@ The dataset and notebook are baked into the image, so no other files are needed.
 
 | Member | ID |
 |---|---|
-| Mahmoud Adel | |
-| | |
-| | |
+| Mahmoud Adel Khalil | 231001114 |
+| Ibrahim Abdellatif | 222000075 |
+| Abdulsalam Emad | 222000008 |
