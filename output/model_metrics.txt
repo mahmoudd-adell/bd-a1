@@ -1,0 +1,79 @@
+CSCI461 Assignment 1 - Supervised SMS spam classification
+==================================================================
+Dataset: SMS Spam Collection, 5171 messages after removing duplicates
+Split  : 80/20 stratified (train=4136, test=1035), random_state=42
+Features: TF-IDF on cleaned_text (fitted on training data only)
+Positive class: spam (1)
+
+Summary on test set
+-------------------
+| model                                              |   accuracy |   precision (spam) |   recall (spam) |   F1 (spam) |   F1 (macro) |   ROC-AUC |
+|:---------------------------------------------------|-----------:|-------------------:|----------------:|------------:|-------------:|----------:|
+| A. Multinomial NB (unigrams)                       |     0.9807 |             0.9826 |          0.8626 |      0.9187 |       0.9539 |    0.9922 |
+| B. Logistic Regression (unigrams)                  |     0.9845 |             0.9389 |          0.9389 |      0.9389 |       0.965  |    0.994  |
+| C. Tuned Logistic Regression (grid search) [bonus] |     0.9865 |             0.9606 |          0.9313 |      0.9457 |       0.969  |    0.9935 |
+
+Grid search (bonus) best params: {'clf__C': 100, 'tfidf__min_df': 2, 'tfidf__ngram_range': (1, 1)} | best 5-fold CV F1 = 0.9622
+
+=== A. Multinomial NB (unigrams) ===
+              precision    recall  f1-score   support
+
+         ham     0.9804    0.9978    0.9890       904
+        spam     0.9826    0.8626    0.9187       131
+
+    accuracy                         0.9807      1035
+   macro avg     0.9815    0.9302    0.9539      1035
+weighted avg     0.9807    0.9807    0.9801      1035
+
+Confusion matrix [rows=true, cols=pred | ham, spam]:
+[[902   2]
+ [ 18 113]]
+TN=902  FP=2  FN=18  TP=113
+
+=== B. Logistic Regression (unigrams) ===
+              precision    recall  f1-score   support
+
+         ham     0.9912    0.9912    0.9912       904
+        spam     0.9389    0.9389    0.9389       131
+
+    accuracy                         0.9845      1035
+   macro avg     0.9650    0.9650    0.9650      1035
+weighted avg     0.9845    0.9845    0.9845      1035
+
+Confusion matrix [rows=true, cols=pred | ham, spam]:
+[[896   8]
+ [  8 123]]
+TN=896  FP=8  FN=8  TP=123
+
+=== C. Tuned Logistic Regression (grid search) [bonus] ===
+              precision    recall  f1-score   support
+
+         ham     0.9901    0.9945    0.9923       904
+        spam     0.9606    0.9313    0.9457       131
+
+    accuracy                         0.9865      1035
+   macro avg     0.9754    0.9629    0.9690      1035
+weighted avg     0.9864    0.9865    0.9864      1035
+
+Confusion matrix [rows=true, cols=pred | ham, spam]:
+[[899   5]
+ [  9 122]]
+TN=899  FP=5  FN=9  TP=122
+
+Best model (spam F1): C. Tuned Logistic Regression (grid search) [bonus]
+
+Interpretation
+--------------
+- Baseline (always predict ham) = 87.3% accuracy, so precision/recall/F1 for the spam class are the key metrics.
+- Naive Bayes: highest precision (0.98, 2 false positives) but lowest recall (0.86, 18 spam missed).
+- Balanced Logistic Regression: precision = recall = 0.94; better balance (spam F1 0.939).
+- Tuned Logistic Regression (bonus grid search): best accuracy 98.65% and spam F1 0.946 (9 FN, 5 FP).
+  The grid chose unigrams, min_df=2, C=100; bigrams did not improve 5-fold CV F1.
+- Strongest spam terms: phonetoken, urltoken, moneytoken, text, txt, reply, free, won.
+- Missed spam is mostly promotional text without numbers/links; false alarms are ham using words like free/call/text.
+
+Limitations
+-----------
+1. Imbalanced data and only 131 spam messages in the test set: each error changes recall by ~0.8 points; single split.
+2. Old (2000s) and source-specific data (UK spam vs Singapore ham): likely concept drift on modern spam.
+3. Bag-of-words ignores word order and is vulnerable to obfuscated or conversational spam.
